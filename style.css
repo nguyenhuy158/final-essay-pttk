@@ -1,0 +1,16 @@
+textarea {
+    resize: none;
+}
+
+.money {
+    cursor: pointer;
+}
+
+.toast {
+    z-index: 15;
+    display: none;
+}
+
+img {
+    object-fit: cover;
+}
