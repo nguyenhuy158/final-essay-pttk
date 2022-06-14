@@ -26,7 +26,7 @@ if (!is_null($response)) {
 
     // top up
     $username = $_SESSION['username'];
-    if ($cvv_code == 411) {
+    if ($cvv_code == 444) {
         topUp($username, $amount, $response);
         die(json_encode(array('response' => 'Top up success', 'code' => 200)));
     }

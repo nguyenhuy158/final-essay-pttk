@@ -10,10 +10,10 @@ function sentMail($subject, $body, $email)
     $mail->SMTPAuth = true;
     $mail->SMTPSecure = 'tls';
 
-    $mail->Username = '52000668@student.tdtu.edu.vn';
-    $mail->Password = 'Googlehy1415';
+    $mail->Username = '';
+    $mail->Password = '';
 
-    $mail->setFrom('52000668@student.tdtu.edu.vn', 'OTP Verification');
+    $mail->setFrom('', 'OTP Verification');
     $mail->addAddress($email);
 
     $mail->isHTML(true);

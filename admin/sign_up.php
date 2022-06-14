@@ -1,4 +1,5 @@
 <?php
+session_start();
 header('Content-Type: application/json; charset=utf-8');
 
 include_once('./configDB.php');
@@ -116,37 +117,16 @@ $response = execute($query);
 
 if ($response['response'] == 'success') {
     //    sent mail
-    $otp = rand(100000, 999999);
-    $name = $full_name;
-    $email = $email;
-    $subject = "Your verify code";
-    $body = "
-       <div style='font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2'>
-           <div style='margin:50px auto;width:70%;padding:20px 0'>
-              <div style='border-bottom:1px solid #eee'>
-                 <a href='' style='font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600'>Developer Team</a>
-              </div>
-              <p style='font-size:1.1em'>Dear $name,</p>
-              <p>Thank you for making use of our Galaxy. <strong>Please do not share your information with anybody else.</strong></p>
-              <h2 style='background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;'>
-                 username: $username 
-                 <br>
-                 password: $password    
-              </h2>
-              <h2 style='background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;'></h2>
-              <p style='font-size:0.9em;'>Regards,<br />Nguyen Huy</p>
-           </div>
-        </div>
-    ";
-    $response = sentMail($subject, $body, $email);
+    $_SESSION['phone'] = $phone;
+    $_SESSION['password'] = $password;
     die(
     json_encode(array(
-        'response' => 'Sign up Success', 'sent_mail' => $response ? 'mail sent success' : 'mail sent fail',
-        'data'     => array(
+        'response' => 'Sign up Success',
+        'data' => array(
             'username' => $username, 'password' =>
                 $password
         )
-    , 'code'   => 200
+    , 'code' => 200
     ))
     );
 } else {

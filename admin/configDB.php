@@ -401,9 +401,19 @@ function getUser($username)
     return executeResult("SELECT * FROM users WHERE username = '$username'", true);
 }
 
-function getUserByPhone($phone)
+function getUserIdByUsername($username)
 {
-    return executeResult("SELECT * FROM users WHERE phone = '$phone'", true);
+    return executeResult("SELECT id FROM users WHERE username = '$username'", true)['id'];
+}
+
+function getUsernameByPhone($phone)
+{
+    return executeResult("SELECT username FROM users WHERE phone = '$phone'", true)['username'];
+}
+
+function getPasswordByPhone($phone)
+{
+    return executeResult("SELECT password FROM users WHERE phone = '$phone'", true)['password'];
 }
 
 function getUserById($id)
@@ -716,3 +726,66 @@ function purchasesType2Text($type)
     return 'Top up card';
 }
 
+function getNameById($id)
+{
+    $query = "SELECT name FROM `film` WHERE id = $id";
+
+    $response = executeResult($query);
+    return $response['name'];
+}
+
+function getCoverById($id)
+{
+    $query = "SELECT cover FROM `film` WHERE id = $id";
+
+    $response = executeResult($query);
+    return $response['cover'];
+}
+
+function getDescriptionById($id)
+{
+    $query = "SELECT description FROM `film` WHERE id = $id";
+
+    $response = executeResult($query);
+    return $response['description'];
+}
+
+function getPriceById($id)
+{
+    $query = "SELECT price FROM `film` WHERE id = $id";
+
+    $response = executeResult($query);
+    return $response['price'];
+}
+
+function getSpaceById($id)
+{
+    $query = "SELECT space FROM `film` WHERE id = $id";
+
+    $response = executeResult($query);
+    return $response['space'];
+}
+
+function spaceAble($id, $i)
+{
+    $query = "SELECT count(*) as count FROM `history` WHERE film_id = '$id' and space = '$i'";
+
+    $response = executeResult($query);
+    return $response['count'] == '1';
+}
+
+function getCurrentSpaceById($id)
+{
+    $query = "SELECT count(*) as count FROM `history` WHERE film_id = $id";
+
+    $response = executeResult($query);
+    return getSpaceById($id) - $response['count'];
+}
+
+function getMyTicketsByUsername($username)
+{
+    $user_id = getUserIdByUsername($username);
+    $query = "SELECT * FROM `history` WHERE user_id = '$user_id'";
+    $response = executeResult($query);
+    return count($response) == count($response, COUNT_RECURSIVE) ? empty($response) ? array() : array($response) : $response;
+}
