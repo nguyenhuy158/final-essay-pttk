@@ -42,8 +42,11 @@ require_once('./admin/configDB.php');
                     <div>
                     </div>
                     <div>
-                        <a class='btn btn-outline-secondary btn-sm' type='button' href='./index.php'>
+                        <a class='btn btn-outline-primary btn-sm' type='button' href='./index.php'>
                             Home
+                        </a>
+                        <a class='btn btn-outline-secondary btn-sm' type='button' href='./logout.php'>
+                            Logout
                         </a>
                     </div>
                 </div>
@@ -81,23 +84,53 @@ require_once('./admin/configDB.php');
         echo "
             <div class='col-sm '>
                 <div class='card' style='width: 19rem;'>
-                    <img src='./images/" . $films[$i]['image'] . "' class='card-img-top' alt='...'>
+                    <img src='./images/" . $films[$i]['cover'] . "' class='card-img-top' alt='...'>
                     <div class='card-body'>
                         <h5 class='card-title'>" . $films[$i]['name'] . "</h5>
-                        
                     </div>
                 </div>
             </div>
             
-            <div class='col-sm d-flex align-items-stretch'>
-                <p class='card-text h3'>
-                    " . $films[$i]['description'] . "
-                </p>
+            <div class='col-sm d-flex align-items-stretch flex-column'>
+                    <p class='h3'>" . join("</p><p class='h3'>", explode(PHP_EOL, $films[$i]['description'])) . "</p>
             </div>
+            
+            
         ";
+        echo "</div>";
+        echo "<div class='row'>
+                <div class='col'>
+                    <p class='card-text h3'>
+                        Number of empty seats: " . getCurrentSpaceById($films[$i]['id']) . "
+                    </p>
+                </div>
+                <div class='col'>
+                    <p class='card-text h3'>
+                        Price: " . formatMoney(getPriceById($films[$i]['id'])) . " VND
+                    </p>
+                </div>
+            </div>";
+    }
+
+    echo "<div class='row'>";
+    for ($i = 1; $i <= getSpaceById($films[0]['id']); $i++) {
+        if ($i != 1 && $i % 10 == 1) {
+            echo "</div>";
+            echo "<div class='row'>";
+        }
+        if (spaceAble($films[0]['id'], $i) != '1') {
+            echo "<div class='col px-1'> <button class='btn btn-outline-primary w-100'>$i</button> </div>";
+        } else {
+            echo "<div class='col px-1'> <button class='btn btn-secondary w-100' disabled>$i</button> </div>";
+        }
+
     }
     echo "</div>";
 
+    echo "<div class='row m-3'>";
+    echo "<div class='col'><button class='btn btn-outline-primary w-100' disabled>available</button></div>";
+    echo "<div class='col'><button class='btn btn-secondary w-100' disabled>not available</button></div>";
+    echo "</div>";
     ?>
 </div>
 

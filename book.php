@@ -81,7 +81,7 @@ require_once('./admin/configDB.php');
         echo "
             <div class='col-sm '>
                 <div class='card' style='width: 19rem;'>
-                    <img src='./images/" . $films[$i]['image'] . "' class='card-img-top' alt='...'>
+                    <img src='./images/" . $films[$i]['cover'] . "' class='card-img-top' alt='...'>
                     <div class='card-body'>
                         <h5 class='card-title'>" . $films[$i]['name'] . "</h5>
                         
@@ -91,22 +91,47 @@ require_once('./admin/configDB.php');
             
             <div class='col-sm d-flex align-items-stretch'>
                 <p class='card-text h3'>
-                    Number of empty seats: " . $films[$i]['space'] . "
+                    Number of empty seats: " . getCurrentSpaceById($films[$i]['id']) . "
                 </p>
             </div>
             <div class='col-sm d-flex align-items-stretch'>
-
-                <p>
-                    <form action='./bookConfig.php' method='post'>
-                        <input type='hidden' name='id_films' value='" . $_GET['id_films'] . "' >
-                        <button type='submit' class='btn-block btn btn-secondary'>Book</button>
-                    </form>
+                <p class='card-text h3'>
+                    Price: " . formatMoney(getPriceById($films[$i]['id'])) . " VND
                 </p>
             </div>
         ";
     }
     echo "</div>";
 
+    echo "<div class='row mt-3'>";
+    for ($i = 1; $i <= getSpaceById($films[0]['id']); $i++) {
+        if ($i != 1 && $i % 10 == 1) {
+            echo "</div>";
+            echo "<div class='row'>";
+        }
+        if (spaceAble($films[0]['id'], $i) != '1') {
+            echo "<div class='col px-1'>
+                    <form action='./bookConfig.php' method='post'>
+                        <input type='hidden' name='id_films' value='" . $_GET['id_films'] . "' >
+                        <input type='hidden' name='space' value='" . $i . "' >
+                        <button type='submit' class='btn btn-outline-primary w-100'>$i</button> </div>
+                    </form>";
+        } else {
+            echo "<div class='col px-1'>
+                    <form action='./bookConfig.php' method='post'>
+                        <input type='hidden' name='id_films' value='" . $_GET['id_films'] . "' >
+                        <input type='hidden' name='space' value='" . $i . "' >
+                        <button type='submit' class='btn btn-secondary w-100' disabled>$i</button> </div>
+                    </form>";
+        }
+
+    }
+    echo "</div>";
+
+    echo "<div class='row m-3'>";
+    echo "<div class='col'><button class='btn btn-outline-primary w-100' disabled>available</button></div>";
+    echo "<div class='col'><button class='btn btn-secondary w-100' disabled>not available</button></div>";
+    echo "</div>";
     ?>
 </div>
 
@@ -120,7 +145,45 @@ require_once('./admin/configDB.php');
         crossorigin="anonymous"></script>
 <script src="./main.js"></script>
 <script>
+    $("form").submit(function (e) {
+        e.preventDefault();
+        let form = $(this);
+        let actionUrl = form.attr("action");
 
+        var $form = $("#idForm");
+        var data = getFormData($form);
+
+        $.ajax({
+            type: "POST",
+            url: actionUrl,
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData: false,
+            beforeSend: function () {
+            },
+            success: function (result) {
+                console.log(result);
+                console.log("success");
+                if (result.code === 200) {
+                    $(".toast-header > strong").html("Book film Success");
+                    $(".toast-body").html(result.response);
+                    $(".toast").toast("show");
+
+                    setTimeout(() => window.location.assign("./index.php"), 2000);
+                } else {
+                    $(".toast-header > strong").html("Book film Fail");
+                    $(".toast-body").html(result.response);
+                    $(".toast").toast("show");
+                }
+            },
+            error: function (e) {
+                $(".toast-header > strong").html("Book film Fail");
+                $(".toast-body").html(e.responseText);
+                $(".toast").toast("show");
+            },
+        });
+    });
 </script>
 </body>
 </html>

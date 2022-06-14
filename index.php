@@ -1,8 +1,14 @@
 <?php
-//header('location: login.php');
 session_start();
 require_once('./admin/configDB.php');
 
+if (isset($_SESSION['username']) && $_SESSION['username'] == 'admin') {
+    header('Location: admin.php');
+} elseif (isset($_SESSION['username'])) {
+    $username = $_SESSION['username'];
+} else {
+    session_destroy();
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -62,6 +68,9 @@ require_once('./admin/configDB.php');
                     <div>
                     </div>
                     <div>
+                        <a class='btn btn-outline-secondary btn-sm' type='button' href='./home.php'>
+                            Home
+                        </a>
                         <a class='btn btn-outline-secondary btn-sm' type='button' href='./logout.php'>
                             Logout
                         </a>
@@ -102,7 +111,7 @@ require_once('./admin/configDB.php');
         echo "
             <div class='col-sm d-flex align-items-stretch'>
                 <div class='card' style='width: 19rem;'>
-                    <img src='./images/" . $films[$i]['image'] . "' class='card-img-top' alt='...'>
+                    <img src='./images/" . $films[$i]['cover'] . "' class='card-img-top' alt='...'>
                     <div class='card-body'>
                         <h5 class='card-title'>" . $films[$i]['name'] . "</h5>
                         <p class='card-text text-truncate'>

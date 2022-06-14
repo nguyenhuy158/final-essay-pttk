@@ -106,6 +106,64 @@ if (isset($_SESSION['username']) && $_SESSION['username'] == 'admin') {
         </div>
     </div>
 
+    <!--    form add-->
+    <form id="idForm" action="./admin/addFilm.php" method="POST" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label for="input_name_film">Name of film: </label>
+                    <input type="text" class="form-control" id="input_name_film" placeholder="" required
+                           name="name_film" autocomplete="off"/>
+                </div>
+
+                <div class="form-group">
+                    <div class="custom-file">
+                        <input required name="cover" type="file" class="form-control-file" id="input_cover"
+                               class="custom-file-input"
+                               accept="image/*"/>
+                        <label class="custom-file-label" for="input_cover">Cover</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="input_description">Description: </label>
+                    <textarea class="form-control" id="input_description" required name="description"
+                              rows="5"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label for="input_price">Price:</label>
+                    <input type="number" class="form-control" id="input_price"
+                           value="60000" step="1000"
+                           required name="price"/>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <div class="form-group">
+                        <label for="input_space">Space:</label>
+                        <input type="number" class="form-control" id="input_space"
+                               value="100" step="1"
+                               required name="space"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">
+                Add
+            </button>
+            <button type="reset" class="btn btn btn-outline-secondary btn-sm">
+                Reset
+            </button>
+        </div>
+    </form>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"
@@ -119,7 +177,46 @@ if (isset($_SESSION['username']) && $_SESSION['username'] == 'admin') {
 <script src="./main.js"></script>
 
 <script>
-    // toLocaleString('it-IT', {style : 'currency', currency : 'VND'});
+    $("#idForm").submit(function (e) {
+        e.preventDefault();
+        let form = $(this);
+        let actionUrl = form.attr("action");
+
+        var $form = $("#idForm");
+        var data = getFormData($form);
+
+        $.ajax({
+            type: "POST",
+            url: actionUrl,
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData: false,
+            beforeSend: function () {
+            },
+            success: function (result) {
+                console.log(result);
+                console.log("success");
+                if (result.code === 200) {
+                    $(".toast-header > strong").html("Add film Success");
+                    $(".toast-body").html(result.response);
+                    $(".toast").toast("show");
+
+                    setTimeout(() => window.location.assign("./admin.php"), 2000);
+                } else {
+                    console.log(result.response);
+                    $(".toast-header > strong").html("Add film Fail");
+                    $(".toast-body").html(result.response);
+                    $(".toast").toast("show");
+                }
+            },
+            error: function (e) {
+                $(".toast-header > strong").html("Add film Fail");
+                $(".toast-body").html(e.responseText);
+                $(".toast").toast("show");
+            },
+        });
+    });
 </script>
 </body>
 </html>

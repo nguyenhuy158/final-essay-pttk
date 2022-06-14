@@ -113,9 +113,6 @@ if (isset($_SESSION['username']) && $_SESSION['username'] == 'admin') {
                                 echo "<a class='dropdown-item bg-light' href='./buyPhoneCard.php'>
                                         Buy phone card
                                     </a>";
-                                echo "<a class='dropdown-item bg-light' href='./myTickets.php'>
-                                        My tickets
-                                    </a>";
                             }
                             ?>
                             <a class="dropdown-item" href="./changePassword.php">
@@ -132,7 +129,48 @@ if (isset($_SESSION['username']) && $_SESSION['username'] == 'admin') {
         </div>
     </div>
 
+    <div class="row">
 
+        <?php
+        $myTickets = getMyTicketsByUsername($_SESSION['username']);
+        if (count($myTickets) == 0) {
+            echo "
+            <div class='col'>
+                <p class='w-100'>No ticket</p>
+            </div>
+            ";
+        } else {
+            echo "<div class='col'>
+            <table class='table table-hover table-striped'>
+                <thead>
+                <tr class='table-primary'>
+                    <th scope='col'>Name of film</th>
+                    <th scope='col'>Space</th>
+                    <th scope='col'>Details of film</th>
+                </tr>
+                </thead>
+                <tbody>
+                ";
+            for ($i = 0; $i < count($myTickets); $i++) {
+                echo "
+                    <tr>
+                        <th scope='col'>" . getNameById($myTickets[$i]['film_id']) . "</th>
+                        <th scope='col'>" . $myTickets[$i]['space'] . "</th>
+                        <th scope='col'>
+                            <form action='./detail.php' method='get'>
+                                <input type='hidden' name='id_films' value='" . $myTickets[$i]['film_id'] . "' >
+                                <button type='submit' class='btn-block btn btn-secondary'>go</button>
+                            </form>
+                        </th>
+                    </tr>
+                    ";
+            }
+            echo "</tbody>
+                </table>
+                ";
+        }
+        ?>
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"

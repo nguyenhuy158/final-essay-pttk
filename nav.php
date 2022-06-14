@@ -4,8 +4,8 @@ echo "
         <div class='col'>
             <div class='d-flex justify-content-between'>
                 <div>
-                    <a class='btn btn-outline-secondary btn-sm' type='button' href='./home.php'>
-                        Home
+                    <a class='btn btn-outline-secondary btn-sm' type='button' href='./index.php'>
+                        Book now
                     </a>
                 </div>
                 <div>

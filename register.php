@@ -55,7 +55,7 @@ session_destroy();
 
         <div class="form-group">
             <label for="input_email">Email</label>
-            <input type="email" class="form-control" id="input_email" placeholder="52000668@student.tdtu.edu.vn"
+            <input type="email" class="form-control" id="input_email" placeholder="hyquaq@gmail.com"
                    required name="email"/>
         </div>
 
@@ -134,7 +134,7 @@ session_destroy();
         } else if (
             $("input[name='email']")
                 .val()
-                .match(/^[a-zA-Z0-9._%+-]+@student.tdtu.edu.vn$/g) == null
+                .match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9._%+-]+$/g) == null
         ) {
             $(".toast-header > strong").html("Email incorrect");
             $(".toast-body").html(`Domain should '@student.tdtu.edu.vn'<br> Please enter again`);

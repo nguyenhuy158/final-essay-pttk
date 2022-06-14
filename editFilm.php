@@ -106,6 +106,58 @@ if (isset($_SESSION['username']) && $_SESSION['username'] == 'admin') {
         </div>
     </div>
 
+    <!--    films-->
+    <?php
+    $films = getFilms();
+
+    echo "<div class='row mt-3'>";
+    for ($i = 0; $i < count($films); $i++) {
+        if ($i != 0 && $i % 3 == 0) {
+            echo "</div>";
+            echo "<div class='row mt-3'>";
+        }
+        echo "
+            <div class='col-sm d-flex align-items-stretch'>
+                <div class='card' style='width: 19rem;'>
+                    <img src='./images/" . $films[$i]['cover'] . "' class='card-img-top' alt='...'>
+                    <div class='card-body'>
+                        <h5 class='card-title'>" . $films[$i]['name'] . "</h5>
+                        <p class='card-text text-truncate'>
+                            " . $films[$i]['description'] . "
+                        </p>
+                    </div>
+                    <div class='card-footer text-muted'>
+                        <div class='row'>
+                            <div class='col'>
+                                <form action='./edit.php' method='get'>
+                                    <input type='hidden' name='id_films' value='" . $films[$i]['id'] . "' >
+                                    <button type='submit' class='btn-block btn btn-primary'>Edit</button>
+                                </form>
+                            </div>
+                            <div class='col'>
+                                <form class='removeForm' action='./admin/remove.php' method='get'>
+                                    <input type='hidden' name='id_films' value='" . $films[$i]['id'] . "' >
+                                    <button type='submit' class='btn-block btn btn-secondary'>Remove</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        ";
+    }
+    $i = 0;
+    while ((count($films) + $i) % 3 != 0) {
+        $i++;
+        echo "
+        <div class='col-sm d-flex align-items-stretch'>
+            
+        </div>
+        ";
+    }
+    echo "</div>";
+
+    ?>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"
@@ -119,7 +171,47 @@ if (isset($_SESSION['username']) && $_SESSION['username'] == 'admin') {
 <script src="./main.js"></script>
 
 <script>
-    // toLocaleString('it-IT', {style : 'currency', currency : 'VND'});
+    $("#idForm").submit(function (e) {
+        e.preventDefault();
+        let form = $(this);
+        let actionUrl = form.attr("action");
+
+        var $form = $("#idForm");
+        var data = getFormData($form);
+
+        $.ajax({
+            type: "POST",
+            url: actionUrl,
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData: false,
+            beforeSend: function () {
+            },
+            success: function (result) {
+                console.log(result);
+                console.log("success");
+                if (result.code === 200) {
+                    $(".toast-header > strong").html("Add film Success");
+                    $(".toast-body").html(result.response);
+                    $(".toast").toast("show");
+
+                    setTimeout(() => window.location.assign("./admin.php"), 2000);
+                } else {
+                    console.log(result.response);
+                    $(".toast-header > strong").html("Add film Fail");
+                    $(".toast-body").html(result.response);
+                    $(".toast").toast("show");
+                }
+            },
+            error: function (e) {
+                $(".toast-header > strong").html("Add film Fail");
+                $(".toast-body").html(e.responseText);
+                $(".toast").toast("show");
+            },
+        });
+    });
+
 </script>
 </body>
 </html>

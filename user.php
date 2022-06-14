@@ -119,9 +119,8 @@ if (isset($_SESSION['username']) && $_SESSION['username'] == 'admin') {
                             <a class="dropdown-item" href="./userManagement.php">
                                 User management
                             </a>
-                            <a class="dropdown-item" href="./approveWithdrawAndTransfer.php">
-                                Approve withdrawals and transfers
-                            </a>
+
+                                
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="./logout.php">
                                 Logout
